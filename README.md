@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🧁 Online Shopping for Baking Ingredients System
 
 A full-stack e-commerce web application for buying baking ingredients and tools online. Built with **React**, **Express**, **MySQL**, and **JWT Authentication**.
@@ -355,3 +356,7 @@ For questions or support, please open an issue on GitHub.
 ---
 
 **Happy Baking! 🧁**
+=======
+# ASM_SWD
+SWD assignment
+>>>>>>> 0548c5616accebd2e82a53e698a4d1670d7c0e3c
