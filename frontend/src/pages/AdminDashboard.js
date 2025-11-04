@@ -8,6 +8,10 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+<<<<<<< HEAD
+=======
+  const [users, setUsers] = useState([]);
+>>>>>>> main
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +27,19 @@ const AdminDashboard = () => {
     image: ''
   });
 
+<<<<<<< HEAD
+=======
+  // User modal state
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [userForm, setUserForm] = useState({
+    email: '',
+    address: '',
+    role: '',
+    password: ''
+  });
+
+>>>>>>> main
   useEffect(() => {
     fetchData();
   }, [activeTab]);
@@ -40,6 +57,12 @@ const AdminDashboard = () => {
       } else if (activeTab === 'orders') {
         const { data } = await API.get('/orders');
         setOrders(data);
+<<<<<<< HEAD
+=======
+      } else if (activeTab === 'users') {
+        const { data } = await API.get('/auth/users');
+        setUsers(data);
+>>>>>>> main
       }
     } catch (error) {
       toast.error('Failed to fetch data');
@@ -112,6 +135,59 @@ const AdminDashboard = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleShowUserModal = (user = null) => {
+    if (user) {
+      setEditingUser(user);
+      setUserForm({
+        email: user.email || '',
+        address: user.address || '',
+        role: user.role || '',
+        password: ''
+      });
+    } else {
+      setEditingUser(null);
+      setUserForm({
+        email: '',
+        address: '',
+        role: 'customer',
+        password: ''
+      });
+    }
+    setShowUserModal(true);
+  };
+
+  const handleSaveUser = async (e) => {
+    e.preventDefault();
+    try {
+      const userData = { ...userForm };
+      if (!userData.password) {
+        delete userData.password; // Don't send empty password
+      }
+
+      await API.put(`/auth/users/${editingUser.id}`, userData);
+      toast.success('User updated successfully!');
+      setShowUserModal(false);
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update user');
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        await API.delete(`/auth/users/${id}`);
+        toast.success('User deleted successfully!');
+        fetchData();
+      } catch (error) {
+        toast.error(error.response?.data?.message || 'Failed to delete user');
+      }
+    }
+  };
+
+>>>>>>> main
   if (loading) return <Loader />;
 
   return (
@@ -173,6 +249,64 @@ const AdminDashboard = () => {
           </Card>
         </Tab>
 
+<<<<<<< HEAD
+=======
+        <Tab eventKey="users" title="Users">
+          <Card>
+            <Card.Body>
+              <h4 className="mb-3">Manage Users</h4>
+
+              <Table striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Address</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <Badge bg={user.role === 'admin' ? 'danger' : 'primary'}>
+                          {user.role}
+                        </Badge>
+                      </td>
+                      <td>{user.address || 'N/A'}</td>
+                      <td>{new Date(user.created_at).toLocaleDateString()}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => handleShowUserModal(user)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDeleteUser(user.id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+        </Tab>
+
+>>>>>>> main
         <Tab eventKey="orders" title="Orders">
           <Card>
             <Card.Body>
@@ -321,6 +455,83 @@ const AdminDashboard = () => {
           </Modal.Footer>
         </Form>
       </Modal>
+<<<<<<< HEAD
+=======
+
+      {/* User Modal */}
+      <Modal show={showUserModal} onHide={() => setShowUserModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit User</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleSaveUser}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingUser?.username || ''}
+                disabled
+              />
+              <Form.Text className="text-muted">
+                Username cannot be changed
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={userForm.email}
+                onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type="text"
+                value={userForm.address}
+                onChange={(e) => setUserForm({ ...userForm, address: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Role</Form.Label>
+              <Form.Select
+                value={userForm.role}
+                onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
+                required
+              >
+                <option value="customer">Customer</option>
+                <option value="admin">Admin</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>New Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={userForm.password}
+                onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                placeholder="Leave blank to keep current password"
+              />
+              <Form.Text className="text-muted">
+                Only fill this field if you want to change the password
+              </Form.Text>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowUserModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Update User
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+>>>>>>> main
     </Container>
   );
 };
